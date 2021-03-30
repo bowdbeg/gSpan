@@ -15,7 +15,7 @@ from .graph import VACANT_GRAPH_ID
 from .graph import VACANT_VERTEX_LABEL
 
 import pandas as pd
-
+from tqdm import tqdm
 
 def record_timestamp(func):
     """Record timestamp before and after call of `func`."""
@@ -191,7 +191,8 @@ class gSpan(object):
                  is_undirected=True,
                  verbose=False,
                  visualize=False,
-                 where=False):
+                 where=False,
+                 output=None):
         """Initialize gSpan instance."""
         self._database_file_name = database_file_name
         self.graphs = dict()
@@ -211,6 +212,7 @@ class gSpan(object):
         self._visualize = visualize
         self._where = where
         self.timestamps = dict()
+        self._output = output
         if self._max_num_vertices < self._min_num_vertices:
             print('Max number of vertices can not be smaller than '
                   'min number of that.\n'
@@ -302,7 +304,8 @@ class gSpan(object):
         if self._max_num_vertices < 2:
             return
         root = collections.defaultdict(Projected)
-        for gid, g in self.graphs.items():
+        for gid, g in tqdm(self.graphs.items(), total=len(self.graphs), desc='PDFS'):
+        # for gid, g in self.graphs.items():
             for vid, v in g.vertices.items():
                 edges = self._get_forward_root_edges(g, vid)
                 for e in edges:
@@ -310,7 +313,8 @@ class gSpan(object):
                         PDFS(gid, e, None)
                     )
 
-        for vevlb, projected in root.items():
+        for vevlb, projected in tqdm(root.items(),total=len(root),desc='Mining'):
+        # for vevlb, projected in root.items():
             self._DFScode.append(DFSedge(0, 1, vevlb))
             self._subgraph_mining(projected)
             self._DFScode.pop()

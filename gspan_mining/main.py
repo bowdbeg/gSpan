@@ -18,7 +18,7 @@ def main(FLAGS=None):
         FLAGS, _ = parser.parse_known_args(args=sys.argv[1:])
 
     if not os.path.exists(FLAGS.database_file_name):
-        print('{} does not exist.'.format(FLAGS.database_file_name))
+        print("{} does not exist.".format(FLAGS.database_file_name))
         sys.exit()
 
     gs = gSpan(
@@ -30,7 +30,8 @@ def main(FLAGS=None):
         is_undirected=(not FLAGS.directed),
         verbose=FLAGS.verbose,
         visualize=FLAGS.plot,
-        where=FLAGS.where
+        where=FLAGS.where,
+        output=FLAGS.output,
     )
 
     gs.run()
@@ -38,5 +39,5 @@ def main(FLAGS=None):
     return gs
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
